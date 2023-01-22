@@ -54,12 +54,8 @@ def get_args() -> dict:
 
 def validate_directory(path: str) -> None:
     """Make sure directory specified by user is real"""
-    try:
-        _ = os.listdir(path)
-    except FileNotFoundError:
-        sys.exit(f"Invalid directory path: nothing found at {path}")
-    except NotADirectoryError:
-        sys.exit(f"Invalid directory path: {path} is not a directory")
+    if not os.path.isdir(path):
+        sys.exit(f"Invalid input: {path} is not a directory")
 
 
 def process_files(target: str, destination: str, overwrite_flag: str) -> None:
