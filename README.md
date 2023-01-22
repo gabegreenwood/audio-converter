@@ -1,6 +1,6 @@
 # audio-converter
 
-**FLAC to ALAC Audio File Format Converter**
+## FLAC to ALAC Audio File Format Converter
 
 This script is useful for making a copy of a music or
 audio library containing FLAC files in which all FLAC
@@ -17,4 +17,6 @@ to ALAC files, all other files will simply be copied.
 
 Suggested usage:
 
-`./flac_to_alac.py --input <path/to/existing/library> --output <path/to/directory/for/new/library>`
+`./flac_to_alac.py --input <path/to/existing/library> --output <path/to/directory/for/new/library> --overwrite no`
+
+#### [TODO: improve logging]
