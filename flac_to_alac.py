@@ -69,7 +69,7 @@ def process_files(target: str, destination: str, overwrite_flag: str) -> None:
         path = os.path.join(target, filename)
 
         if os.path.isdir(path):
-            output_dir = destination + '/' + filename
+            output_dir = os.path.join(destination, filename)
             if not os.path.exists(output_dir):
                 os.mkdir(output_dir)
             process_files(path, output_dir, overwrite_flag)
