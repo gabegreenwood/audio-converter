@@ -15,8 +15,13 @@ and including all non-FLAC files such as artwork, log
 files, .mp3 or .aac files, etc. FLAC files will copied
 to ALAC files, all other files will simply be copied.
 
+The --overwrite flag can be used to specify whether
+existing files in will be overwritten or skipped when
+a file with the same name exists in the destination
+folder.
+
 Suggested usage:
-./flac_to_alac.py --input <path/to/existing/library> --output <path/to/directory/for/new/library>
+./flac_to_alac.py --input <path/to/existing/library> --output <path/to/directory/for/new/library> --overwrite no
 """
 
 import argparse
@@ -39,7 +44,7 @@ def get_args() -> dict:
         args.output = input("Enter full path to desired output directory:\n")
     if args.overwrite is None:
         args.overwrite = input("Overwrite output files if they already exist? [y/N]\n")
-    if args.overwrite.lower() == 'y':
+    if args.overwrite.lower()[0] == 'y':
         args.overwrite = '-y'
     else:
         args.overwrite = '-n'
@@ -59,14 +64,17 @@ def validate_directory(path: str) -> None:
 
 def process_files(target: str, destination: str, overwrite_flag: str) -> None:
     """Copy files and directories, converting FLAC to ALAC in the process"""
+
     for filename in os.listdir(target):
         path = os.path.join(target, filename)
+
         if os.path.isdir(path):
             output_dir = destination + '/' + filename
             if not os.path.exists(output_dir):
                 os.mkdir(output_dir)
             process_files(path, output_dir, overwrite_flag)
             continue
+
         extension = path.split('.')[-1]
         if extension.lower() == 'flac':
             modified_filename = ''.join(filename.split(extension)[:-1]) + 'm4a'
@@ -74,7 +82,10 @@ def process_files(target: str, destination: str, overwrite_flag: str) -> None:
             subprocess.call(['ffmpeg', overwrite_flag, '-v', 'warning', '-i', path, '-c:a', 'alac', '-c:v', 'copy', outfile])
         else:
             outfile = os.path.join(destination, filename)
-            subprocess.call(['rsync', '-u', path, outfile])
+            if overwrite_flag == 'y':
+                subprocess.call(['rsync', path, outfile])
+            else:
+                subprocess.call(['rsync', '-u', path, outfile])
 
 
 def main() -> None:
